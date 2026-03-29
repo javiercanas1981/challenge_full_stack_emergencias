@@ -1,5 +1,6 @@
 import { Dispatch } from "redux";
-import { contactService } from "../../featues/contacts/services/ContactService";
+
+import { contactService } from "../../features/contacts/services/ContactService";
 import { CreatePersonDTO, UpdatePersonDTO } from "../../types/types";
 import { ContactsActionTypes } from "./ContactsTypes";
 

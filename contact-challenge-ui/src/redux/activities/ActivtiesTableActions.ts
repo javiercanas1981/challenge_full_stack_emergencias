@@ -1,6 +1,6 @@
 import { Dispatch } from "redux";
 
-import { activityService } from "../../featues/activities/services/ActivityService";
+import { activityService } from "../../features/activities/services/ActivityService";
 import { ActivitySearchCriteria, ContactActivity } from "../../types/types";
 import { ActivitiesTableActionTypes } from "./ActivtiesTableTypes";
 

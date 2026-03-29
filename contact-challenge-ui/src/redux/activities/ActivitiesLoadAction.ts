@@ -1,6 +1,6 @@
 import { Dispatch } from "redux";
-import { activityService } from "../../featues/activities/services/ActivityService";
-import { contactService } from "../../featues/contacts/services/ContactService";
+
+import { activityService } from "../../features/activities/services/ActivityService";
 import { CreateActivityDTO } from "../../types/types";
 import { ActivitiesAction, ActivitiesActionTypes } from "./ActivitiesTypes";
 
@@ -67,7 +67,6 @@ export const addActivity =
       });
     }
   };
-
 
 export const deleteActivity =
   (id: number) => async (dispatch: Dispatch<ActivitiesAction>) => {
