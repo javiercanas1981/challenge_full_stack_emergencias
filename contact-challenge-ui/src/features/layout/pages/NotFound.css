@@ -1,0 +1,20 @@
+.container-404 {
+  width: 300px;
+  margin: 0 auto;
+  text-align: center;
+  min-height: calc(100vh - 352px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  h3 {
+    font-family: "Encode-black";
+    font-size: 20px;
+    margin-top: -30px;
+    margin-bottom: 10px;
+  }
+  p {
+    font-size: 20px;
+    margin-bottom: 60px;
+  }
+}

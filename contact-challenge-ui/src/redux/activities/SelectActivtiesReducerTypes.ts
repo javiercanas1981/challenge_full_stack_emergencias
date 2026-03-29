@@ -1,0 +1,4 @@
+export enum SelectActivitiesActionTypes {
+  SELECT = "ACTIVITIES/SELECT",
+  CLEAR_SELECTION = "ACTIVITIES/CLEAR_SELECTION",
+}

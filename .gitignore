@@ -1,0 +1,17 @@
+# Root node_modules
+node_modules/
+
+# Sub-project node_modules
+contact-challenge-api/node_modules/
+contact-challenge-api/package-lock.json
+contact-challenge-ui/node_modules/
+
+# Build folders
+contact-challenge-ui/dist/
+contact-challenge-ui/build/
+
+# Database files
+*.sqlite
+*.db
+database.sqlite
+
