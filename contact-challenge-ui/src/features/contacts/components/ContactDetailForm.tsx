@@ -1,3 +1,4 @@
+import { Trash2 } from "lucide-react";
 import { Address, Phone } from "../../../types/types";
 
 export interface ContactDetailFormProps {
@@ -158,10 +159,10 @@ export function ContactDetailForm({
                   </select>
 
                   <button
+                    className="p-2 rounded-lg hover:bg-red-50 text-red-600"
                     onClick={() => onRemovePhone(phone.id)}
-                    className="text-red-600 hover:underline text-sm"
                   >
-                    🗑 Delete
+                    <Trash2 size={18} />
                   </button>
                 </div>
               ))}
@@ -184,11 +185,12 @@ export function ContactDetailForm({
                 <div key={address.id}>
                   <div className="flex justify-between items-center mb-2">
                     <p className="text-sm text-gray-500">Address {index + 1}</p>
+
                     <button
-                      onClick={() => onRemoveAddress(address.id!)}
                       className="text-red-600 text-sm hover:underline"
+                      onClick={() => onRemoveAddress(address.id!)}
                     >
-                      Delete
+                      <Trash2 size={18} />
                     </button>
                   </div>
 

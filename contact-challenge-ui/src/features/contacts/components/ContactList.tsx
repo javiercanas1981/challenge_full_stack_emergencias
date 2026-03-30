@@ -1,3 +1,4 @@
+import { Eye, Pencil, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -81,27 +82,24 @@ export function ContactList({ contacts }: ContactListProps) {
 
                     <td className="px-4 py-3 text-right space-x-2">
                       <button
+                        className="p-2 rounded-lg hover:bg-gray-100 text-gray-600"
                         onClick={() => handleView(contact.id)}
-                        className="text-gray-500 hover:text-black"
-                        title="View"
                       >
-                        👁
+                        <Eye size={18} />
                       </button>
 
                       <button
+                        className="p-2 rounded-lg hover:bg-blue-50 text-blue-600"
                         onClick={() => handleEdit(contact.id)}
-                        className="text-blue-600 hover:underline"
-                        title="Edit"
                       >
-                        ✏️
+                        <Pencil size={18} />
                       </button>
 
                       <button
+                        className="p-2 rounded-lg hover:bg-red-50 text-red-600"
                         onClick={() => handleDeleteClick(contact)}
-                        className="text-red-600 hover:underline"
-                        title="Delete"
                       >
-                        🗑
+                        <Trash2 size={18} />
                       </button>
                     </td>
                   </tr>
