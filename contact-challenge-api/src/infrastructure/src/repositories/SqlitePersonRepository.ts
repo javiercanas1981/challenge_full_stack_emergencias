@@ -9,7 +9,6 @@ export class SqlitePersonRepository implements PersonRepository {
     private mapper: IMapper<Person, PersonEntity>,
   ) {}
 
-  // Método privado para evitar repetir la lógica del JOIN en cada consulta
   private async getRelatedData(personId: number) {
     const phones = await this.db.all(
       `SELECT 
