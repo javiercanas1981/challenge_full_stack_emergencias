@@ -23,10 +23,14 @@ export const addContact =
       const newPerson = await contactService.create(person);
       dispatch({ type: ContactsActionTypes.ADD_SUCCESS, payload: newPerson });
     } catch (err: any) {
+      const backendError = err?.response?.data || err;
+
       dispatch({
         type: ContactsActionTypes.FETCH_ERROR,
-        payload: err?.message || "Error creating contact",
+        payload: backendError,
       });
+
+      throw backendError;
     }
   };
 
@@ -34,15 +38,22 @@ export const updateContact =
   (id: number, person: UpdatePersonDTO) => async (dispatch: Dispatch) => {
     try {
       const updatedPerson = await contactService.update(id, person);
+
       dispatch({
         type: ContactsActionTypes.UPDATE_SUCCESS,
         payload: updatedPerson,
       });
+
+      return updatedPerson;
     } catch (err: any) {
+      const backendError = err?.response?.data || err;
+
       dispatch({
         type: ContactsActionTypes.FETCH_ERROR,
-        payload: err?.message || "Error updating contact",
+        payload: backendError,
       });
+
+      throw backendError;
     }
   };
 

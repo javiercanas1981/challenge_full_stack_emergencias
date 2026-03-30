@@ -23,6 +23,7 @@ export interface ContactDetailFormProps {
   onSave: () => void;
   isEditing: boolean;
   pageLoading: boolean;
+  fieldErrors: Record<string, string>;
   errorMessage?: string | null;
   snackbarOpen: boolean;
   onCloseSnackbar: () => void;
@@ -46,6 +47,7 @@ export function ContactDetailForm({
   onSave,
   isEditing,
   pageLoading,
+  fieldErrors,
   errorMessage,
   snackbarOpen,
   onCloseSnackbar,
@@ -94,6 +96,11 @@ export function ContactDetailForm({
                   onChange={(e) => onFieldChange("firstName", e.target.value)}
                   className="border rounded-md p-2 w-full"
                 />
+                {fieldErrors.firstName && (
+                  <p className="text-red-500 text-xs">
+                    {fieldErrors.firstName}
+                  </p>
+                )}
 
                 <input
                   placeholder="Last Name *"
@@ -101,6 +108,9 @@ export function ContactDetailForm({
                   onChange={(e) => onFieldChange("lastName", e.target.value)}
                   className="border rounded-md p-2 w-full"
                 />
+                {fieldErrors.lastName && (
+                  <p className="text-red-500 text-xs">{fieldErrors.lastName}</p>
+                )}
               </div>
 
               <input
@@ -110,6 +120,9 @@ export function ContactDetailForm({
                 onChange={(e) => onFieldChange("email", e.target.value)}
                 className="border rounded-md p-2 w-full"
               />
+              {fieldErrors.email && (
+                <p className="text-red-500 text-xs">{fieldErrors.email}</p>
+              )}
 
               <input
                 type="date"
@@ -117,6 +130,11 @@ export function ContactDetailForm({
                 onChange={(e) => onFieldChange("dateOfBirth", e.target.value)}
                 className="border rounded-md p-2 w-full"
               />
+              {fieldErrors.dateOfBirth && (
+                <p className="text-red-500 text-xs">
+                  {fieldErrors.dateOfBirth}
+                </p>
+              )}
             </div>
           </div>
 

@@ -26,6 +26,19 @@ interface ContactDetailProps {
   isNew?: boolean;
 }
 
+const mapErrors = (error: any): Record<string, string> => {
+  if (error?.errors && Array.isArray(error.errors)) {
+    return error.errors.reduce((acc: Record<string, string>, err: any) => {
+      const constraints = Array.isArray(err.constraints)
+        ? err.constraints.join(", ")
+        : "";
+      acc[err.property] = constraints;
+      return acc;
+    }, {});
+  }
+  return {};
+};
+
 export function ContactDetailPage({ isEditing, isNew }: ContactDetailProps) {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
@@ -38,6 +51,7 @@ export function ContactDetailPage({ isEditing, isNew }: ContactDetailProps) {
   const [phoneNumbers, setPhoneNumbers] = useState<Phone[]>([]);
   const [addresses, setAddresses] = useState<Address[]>([]);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [pageLoading, setPageLoading] = useState(false);
   const [initialized, setInitialized] = useState(false);
@@ -108,7 +122,15 @@ export function ContactDetailPage({ isEditing, isNew }: ContactDetailProps) {
     else setPageLoading(false);
 
     if (contactError) {
-      setErrorMessage(contactError);
+      const error = contactError as any;
+
+      if (error?.errors) {
+        setFieldErrors(mapErrors(error));
+      } else {
+        setFieldErrors({});
+      }
+
+      setErrorMessage(error?.message || "Error saving contact");
       setSnackbarOpen(true);
     } else if (!isNew && !selectedContact && initialized && !contactLoading) {
       navigate("/");
@@ -147,12 +169,9 @@ export function ContactDetailPage({ isEditing, isNew }: ContactDetailProps) {
   };
 
   const handleSave = async () => {
+    setFieldErrors({});
+    setErrorMessage(null);
     const errors: Record<string, string> = {};
-
-    if (!firstName.trim()) errors.firstName = "First name is required";
-    if (!lastName.trim()) errors.lastName = "Last name is required";
-    if (!email.trim()) errors.email = "Email is required";
-    if (!dateOfBirth.trim()) errors.dateOfBirth = "Date of birth is required";
 
     if (Object.keys(errors).length > 0) {
       setErrorMessage(
@@ -200,8 +219,29 @@ export function ContactDetailPage({ isEditing, isNew }: ContactDetailProps) {
 
       navigate("/");
     } catch (error: unknown) {
-      const err = error as { message?: string };
-      setErrorMessage(err.message || "Error saving contact");
+      const err = error as any;
+      let displayMessage = "Error saving contact";
+
+      // Mapeamos los errores a los campos específicos inmediatamente
+      if (err?.errors) {
+        setFieldErrors(mapErrors(err));
+      }
+
+      // Manejo de la estructura específica: { message, errors: [{ property, constraints }] }
+      if (err && typeof err === "object" && Array.isArray(err.errors)) {
+        displayMessage = err.errors
+          .map((e: any) => {
+            const constraints = Array.isArray(e.constraints)
+              ? e.constraints.join(", ")
+              : "";
+            return `${e.property.toUpperCase()}: ${constraints}`;
+          })
+          .join(" | ");
+      } else if (err.message) {
+        displayMessage = err.message;
+      }
+
+      setErrorMessage(displayMessage);
       setSnackbarOpen(true);
     }
   };
@@ -252,6 +292,7 @@ export function ContactDetailPage({ isEditing, isNew }: ContactDetailProps) {
       isEditing={!!isEditing}
       pageLoading={pageLoading}
       errorMessage={errorMessage}
+      fieldErrors={fieldErrors}
       snackbarOpen={snackbarOpen}
       onCloseSnackbar={() => setSnackbarOpen(false)}
     />

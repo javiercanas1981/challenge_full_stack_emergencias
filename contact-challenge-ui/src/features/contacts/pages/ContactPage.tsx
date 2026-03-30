@@ -61,7 +61,13 @@ export const ContactPage = () => {
   const loading = allContactsLoading || searchResultsLoading;
   const error = allContactsError || searchResultsError;
 
-  if (error) return <div style={{ color: "red" }}>{error}</div>; // Combined error state
+  if (error) {
+    const message =
+      typeof error === "string"
+        ? error
+        : (error as any).message || "Error al cargar contactos";
+    return <div style={{ color: "red", padding: "20px" }}>{message}</div>;
+  }
 
   return (
     <>

@@ -1,4 +1,4 @@
-import axios, { AxiosError, AxiosInstance } from "axios";
+import axios, { AxiosInstance } from "axios";
 import {
   CreatePersonDTO,
   Person,
@@ -23,17 +23,14 @@ class ContactService {
     });
   }
 
-  private parseError(error: unknown): string {
+  private parseError(error: unknown): any {
     if (axios.isAxiosError(error)) {
-      const axiosError = error as AxiosError<any>;
-      return (
-        axiosError.response?.data?.error ||
-        axiosError.response?.data?.message ||
-        axiosError.message ||
-        "Unknown error"
-      );
+      if (error.response?.data) {
+        return error.response.data;
+      }
+      return { message: error.message || "Unknown error" };
     }
-    return "Unknown error";
+    return { message: "Unknown error" };
   }
 
   async getAll(): Promise<Person[]> {
@@ -41,7 +38,7 @@ class ContactService {
       const response = await this.api.get<Person[]>("/");
       return response.data;
     } catch (error) {
-      throw new Error(this.parseError(error));
+      throw this.parseError(error);
     }
   }
 
@@ -50,7 +47,7 @@ class ContactService {
       const response = await this.api.get<Person[]>("/search", { params });
       return response.data;
     } catch (error) {
-      throw new Error(this.parseError(error));
+      throw this.parseError(error);
     }
   }
 
@@ -59,7 +56,7 @@ class ContactService {
       const response = await this.api.get<Person>(`/${id}`);
       return response.data;
     } catch (error) {
-      throw new Error(this.parseError(error));
+      throw this.parseError(error);
     }
   }
 
@@ -68,7 +65,7 @@ class ContactService {
       const response = await this.api.post<Person>("/", person);
       return response.data;
     } catch (error) {
-      throw new Error(this.parseError(error));
+      throw this.parseError(error);
     }
   }
 
@@ -77,7 +74,7 @@ class ContactService {
       const response = await this.api.put<Person>(`/${id}`, person);
       return response.data;
     } catch (error) {
-      throw new Error(this.parseError(error));
+      throw this.parseError(error);
     }
   }
 
@@ -85,7 +82,7 @@ class ContactService {
     try {
       await this.api.delete(`/${id}`);
     } catch (error) {
-      throw new Error(this.parseError(error));
+      throw this.parseError(error);
     }
   }
 }
