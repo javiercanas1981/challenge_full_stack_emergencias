@@ -1,11 +1,10 @@
 import { useEffect, useMemo } from "react";
 import { useSelector } from "react-redux";
-
-import { fetchAllActivities } from "../../../redux/activities/ActivitiesLoadAction";
+import { searchActivities } from "../../../redux/activities/ActivtiesTableActions";
 import { fetchAllContacts } from "../../../redux/contacts/ContactsLoadAction";
 import { AppDispatch, IApplicationState } from "../../../redux/store/Store";
 
-import { ContactActivity, ContactWithActivities } from "../../../types/types";
+import { ContactWithActivities } from "../../../types/types";
 
 import { ActivitiesList } from "../components/ActivitiesList";
 
@@ -19,24 +18,27 @@ export default function ActivitiesPage(): React.ReactElement {
     (state: IApplicationState) => state.ContactsState,
   );
 
-  const { activities, loading: activitiesLoading } = useSelector(
-    (state: IApplicationState) => state.ActivitiesState,
+  const { searchResults: activities, loading: activitiesLoading } = useSelector(
+    (state: IApplicationState) => state.ActivitiesTableState,
   );
 
   useEffect(() => {
     dispatch(fetchAllContacts());
-    dispatch(fetchAllActivities());
+    dispatch(searchActivities({}));
   }, [dispatch]);
 
   const contactsWithActivities: ContactWithActivities[] = useMemo(() => {
-    if (!contacts || !activities) return [];
+    if (!contacts) return [];
 
     return contacts.map((contact) => ({
       ...contact,
-      activities: activities.filter((act: ContactActivity) => {
-        const activityContactId = act.personId || (act as any).contactId;
-        return String(activityContactId) === String(contact.id);
-      }),
+      activities: Array.isArray(activities)
+        ? activities.filter((act: any) => {
+            if (!act) return false;
+            const activityContactId = act.personId || act.contactId;
+            return String(activityContactId) === String(contact.id);
+          })
+        : [],
     }));
   }, [contacts, activities]);
 
