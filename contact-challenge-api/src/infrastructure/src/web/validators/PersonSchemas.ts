@@ -10,10 +10,13 @@ export const createPersonSchema = z.object({
       z.object({
         id: z.number().optional(),
         number: z.string().min(1, "Phone number is required"),
-        phoneType: z.object({
-          id: z.number(),
-          typeName: z.string(),
-        }),
+        phoneType: z.union([
+          z.string(),
+          z.object({
+            id: z.number().optional(),
+            typeName: z.string(),
+          }),
+        ]),
       }),
     )
     .optional(),
@@ -44,7 +47,7 @@ export const updatePersonSchema = z.object({
         phoneType: z.union([
           z.string(),
           z.object({
-            id: z.number(),
+            id: z.number().optional(),
             typeName: z.string(),
           }),
         ]),

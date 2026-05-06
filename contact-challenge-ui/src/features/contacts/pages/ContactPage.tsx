@@ -62,11 +62,22 @@ export const ContactPage = () => {
   const error = allContactsError || searchResultsError;
 
   if (error) {
-    const message =
-      typeof error === "string"
-        ? error
-        : (error as any).message || "Error al cargar contactos";
-    return <div style={{ color: "red", padding: "20px" }}>{message}</div>;
+    return (
+      <div className="max-w-3xl mx-auto p-4 m-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
+        <p className="font-bold">
+          {typeof error === "string" ? error : error.message || "Error"}
+        </p>
+        {error.errors && Array.isArray(error.errors) && (
+          <ul className="mt-2 list-disc list-inside text-sm">
+            {error.errors.map((err: any, idx: number) => (
+              <li key={idx}>
+                <span className="font-semibold">{err.path}:</span> {err.message}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    );
   }
 
   return (

@@ -37,7 +37,12 @@ export default function ActivityContactDetailPage() {
 
   const handleBack = () => navigate("/");
 
-  const handleEdit = () => navigate(`/contacts/${id}/edit`);
+  const handleEdit = () => {
+    const contactId = selectedContact?.id || id;
+    if (contactId) {
+      navigate(`/contacts/${contactId}/edit`);
+    }
+  };
 
   const handleAddActivity = async (activity: CreateActivityDTO) => {
     if (!id) return;

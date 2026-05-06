@@ -142,7 +142,6 @@ export async function configureWebServer() {
 
   const { app: appWithLogger } = loggerMiddleware.addDefaultLogger({
     app,
-    bodyParser: express.json(),
   });
 
   // Health

@@ -251,6 +251,11 @@ export function ContactDetailForm({
                       className="border rounded-md p-2"
                     />
                   </div>
+                  {fieldErrors[`addresses.${index}.notes`] && (
+                    <p className="text-red-500 text-xs mt-1">
+                      {fieldErrors[`addresses.${index}.notes`]}
+                    </p>
+                  )}
                 </div>
               ))}
             </div>

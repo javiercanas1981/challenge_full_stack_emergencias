@@ -19,6 +19,7 @@ export function errorHandler(
   _next: NextFunction,
 ): void {
   if (err instanceof ZodError) {
+    console.error(" [Validation Error]:", err.issues);
     res.status(400).json({
       message: "Validation failed",
       errors: err.issues.map((e: ZodIssue) => ({
@@ -30,6 +31,7 @@ export function errorHandler(
   }
 
   if (err instanceof ApplicationError) {
+    console.error(" [Application Error]:", err.message, err.code);
     res.status(400).json({
       error: err.message,
       code: err.code,
@@ -38,6 +40,7 @@ export function errorHandler(
   }
 
   if (err instanceof HttpError) {
+    console.error(" [HTTP Error]:", err.message, err.statusCode);
     res.status(err.statusCode).json({ error: err.message });
     return;
   }

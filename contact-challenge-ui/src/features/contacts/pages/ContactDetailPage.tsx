@@ -29,10 +29,15 @@ interface ContactDetailProps {
 const mapErrors = (error: any): Record<string, string> => {
   if (error?.errors && Array.isArray(error.errors)) {
     return error.errors.reduce((acc: Record<string, string>, err: any) => {
-      const constraints = Array.isArray(err.constraints)
-        ? err.constraints.join(", ")
-        : "";
-      acc[err.property] = constraints;
+      if (typeof err !== "object" || err === null) return acc; // Skip non-object or null errors
+      const key = err.path || err.property;
+      if (key) {
+        acc[key] = String(
+          err.message ||
+            (err.constraints && Object.values(err.constraints).join(", ")) ||
+            "Invalid",
+        );
+      }
       return acc;
     }, {});
   }
@@ -78,14 +83,23 @@ export function ContactDetailPage({ isEditing, isNew }: ContactDetailProps) {
       return;
     }
 
-    if (isEditing && id && !initialized) {
+    if (id && initialized && Number(id) !== selectedContact?.id) {
+      setInitialized(false);
+    }
+
+    if (id && !initialized) {
       setPageLoading(true);
       dispatch(fetchContactById(Number(id)));
     }
-  }, [id, isEditing, isNew, initialized, dispatch]);
+  }, [id, isEditing, isNew, initialized, dispatch, selectedContact?.id]);
 
   useEffect(() => {
-    if (isEditing && selectedContact && !contactLoading && !initialized) {
+    if (
+      selectedContact &&
+      !contactLoading &&
+      !initialized &&
+      selectedContact.id === Number(id)
+    ) {
       setFirstName(selectedContact.firstName ?? "");
       setLastName(selectedContact.lastName ?? "");
       setEmail(selectedContact.email ?? "");
@@ -130,7 +144,9 @@ export function ContactDetailPage({ isEditing, isNew }: ContactDetailProps) {
         setFieldErrors({});
       }
 
-      setErrorMessage(error?.message || "Error saving contact");
+      setErrorMessage(
+        String(error?.error || error?.message || "Error saving contact"),
+      );
       setSnackbarOpen(true);
     } else if (!isNew && !selectedContact && initialized && !contactLoading) {
       navigate("/");
@@ -142,6 +158,7 @@ export function ContactDetailPage({ isEditing, isNew }: ContactDetailProps) {
     isEditing,
     isNew,
     initialized,
+    id,
     navigate,
   ]);
 
@@ -231,14 +248,23 @@ export function ContactDetailPage({ isEditing, isNew }: ContactDetailProps) {
       if (err && typeof err === "object" && Array.isArray(err.errors)) {
         displayMessage = err.errors
           .map((e: any) => {
-            const constraints = Array.isArray(e.constraints)
-              ? e.constraints.join(", ")
-              : "";
-            return `${e.property.toUpperCase()}: ${constraints}`;
+            if (typeof e !== "object" || e === null) {
+              return "Unknown validation error";
+            }
+            const field = String(e.path || e.property || "field");
+            // Prioritize e.message, then join constraints, otherwise "Invalid"
+            const message = String(
+              e.message ||
+                (e.constraints && Object.values(e.constraints).join(", ")) ||
+                "Invalid",
+            );
+            return `${field.toUpperCase()}: ${message}`;
           })
+          // Filter out generic messages if specific errors exist, and ensure no empty strings
+          .filter((msg: string) => msg && msg !== "Unknown validation error")
           .join(" | ");
-      } else if (err.message) {
-        displayMessage = err.message;
+      } else if (err.error || err.message) {
+        displayMessage = String(err.error || err.message);
       }
 
       setErrorMessage(displayMessage);

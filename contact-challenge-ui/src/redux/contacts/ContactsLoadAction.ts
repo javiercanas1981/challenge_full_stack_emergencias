@@ -12,7 +12,7 @@ export const fetchAllContacts = () => async (dispatch: Dispatch) => {
   } catch (err: any) {
     dispatch({
       type: ContactsActionTypes.FETCH_ERROR,
-      payload: err?.message || "Error loading contacts",
+      payload: err?.response?.data || err?.message || "Error loading contacts",
     });
   }
 };

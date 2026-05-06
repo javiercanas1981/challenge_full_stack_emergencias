@@ -7,20 +7,19 @@ export const validationMiddleware = (dtoClass: any) => {
     const validationErrors: ValidationError[] = await validate(instance);
 
     if (validationErrors.length > 0) {
-      return res.status(400).json({
-        message: "Validation failed",
-        errors: validationErrors.map((error) => ({
+      const mapErrors = (errors: ValidationError[]): any[] => {
+        return errors.map((error) => ({
           property: error.property,
           constraints: error.constraints
             ? Object.values(error.constraints)
             : [],
-          children: error.children?.length
-            ? error.children.map((c) => ({
-                property: c.property,
-                constraints: Object.values(c.constraints || {}),
-              }))
-            : [],
-        })),
+          children: error.children?.length ? mapErrors(error.children) : [],
+        }));
+      };
+
+      return res.status(400).json({
+        message: "Validation failed",
+        errors: mapErrors(validationErrors),
       });
     }
 
