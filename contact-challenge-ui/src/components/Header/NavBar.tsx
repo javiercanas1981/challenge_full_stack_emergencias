@@ -1,23 +1,16 @@
+import React from "react";
 import { useNavigate } from "react-router-dom";
 
-/**
- * @typedef {Object} NavBarProps
- * @property {React.ReactNode} children
- * @property {string} activeNav
- * @property {(nav: string) => void} setActiveNav
- */
+interface NavBarProps {
+  children: React.ReactNode;
+  activeNav: string;
+  setActiveNav: (nav: string) => void;
+}
 
-/**
- * @param {NavBarProps} props
- */
-export const NavBar = ({ children, activeNav, setActiveNav }) => {
+export const NavBar = ({ children, activeNav, setActiveNav }: NavBarProps) => {
   const navigate = useNavigate();
 
-  /**
-   * @param {string} nav
-   * @param {string} path
-   */
-  const handleClick = (nav, path) => {
+  const handleClick = (nav: string, path: string) => {
     setActiveNav(nav);
     navigate(path);
   };

@@ -59,7 +59,8 @@ export const ContactPage = () => {
   const displayContacts =
     searchQuery || phoneTypeFilter !== "all" ? searchResults : contacts;
   const loading = allContactsLoading || searchResultsLoading;
-  const error = allContactsError || searchResultsError;
+  // Cast a any para permitir el acceso a propiedades de objeto en caso de que el error no sea solo un string
+  const error = (allContactsError || searchResultsError) as any;
 
   if (error) {
     return (
